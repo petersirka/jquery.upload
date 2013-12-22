@@ -86,7 +86,7 @@ $('#my-file,#dragdrop').on('end', function(e, err) {
 });
 ```
 
-#### $('#my-file,#dragdrop').on('progress', );
+#### $('#my-file,#dragdrop').on('progress');
 
 > On upload progress.
 
