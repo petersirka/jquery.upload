@@ -79,19 +79,19 @@ $.fn.dragdrop = function (url, cls, fnData) {
             el.toggleClass(cls, selected);
 
         switch (e.type) {
-            case 'dragenter':
-            case 'dragover':
-            case 'dragexit':
-            case 'dragleave':
-                e.stopPropagation();
-                e.preventDefault();
-                return;
             case 'drop':
                 e.stopPropagation();
                 e.preventDefault();
                 break;
+            case 'dragenter':
+            case 'dragover':
+            case 'dragexit':
+            case 'dragleave':
+            default:
+                e.stopPropagation();
+                e.preventDefault();
+                return;
         }
-
 
         var files = e.originalEvent.dataTransfer.files;
         var count = files.length;
