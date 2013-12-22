@@ -24,7 +24,14 @@ $.fn.upload = function (url, fnData) {
 
         xhr.addEventListener('load', function () {
             self.data('b', 0);
-            self.trigger('end', [true, this.responseText]);
+
+            if (this.status === 200) {
+                self.trigger('end', [true, $.parseJSON(this.responseText)]);
+                return;
+            }
+
+            self.trigger('error', new Error(this.responseText), this.status);
+            self.trigger('end', [false, null]);
         }, false);
 
         xhr.upload.addEventListener('upload-progress', function (evt) {
@@ -113,7 +120,15 @@ $.fn.dragdrop = function (url, cls, fnData) {
 
         xhr.addEventListener('load', function () {
             self.data('b', 0);
-            self.trigger('end', [$.parseJSON(this.responseText)]);
+
+            if (this.status === 200) {
+                self.trigger('end', [true, $.parseJSON(this.responseText)]);
+                return;
+            }
+
+            self.trigger('error', new Error(this.responseText), this.status);
+            self.trigger('end', [false, null]);
+
         }, false);
 
         xhr.upload.addEventListener('upload-progress', function (evt) {
@@ -126,12 +141,12 @@ $.fn.dragdrop = function (url, cls, fnData) {
         xhr.addEventListener('error', function (e) {
             self.data('b', 0);
             self.trigger('error', e);
-            self.trigger('end', [null]);
+            self.trigger('end', [false, null]);
         }, false);
 
         xhr.addEventListener('abort', function () {
             self.data('b', 0);
-            self.trigger('end', [null]);
+            self.trigger('end', [false, null]);
         }, false);
 
         self.data('b', 1);
