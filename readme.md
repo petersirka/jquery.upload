@@ -1,6 +1,6 @@
 # jQuery file upload
 
-#### $('#element').upload(url, [fnData])
+#### $('#element').upload(url, [fnData], [maximumFiles])
 
 ```html
 <input type="file" name="my-file" id="my-file" />
@@ -19,7 +19,7 @@ $('#my-file').upload('/upload/', function(fd) {
 
 ## Drag & Drop files
 
-#### $('#element').dragdrop(url, [cssClassDragOver], [fnData])
+#### $('#element').dragdrop(url, [cssClassDragOver], [fnData], [maximumFiles])
 
 ```html
 <div id="dragdrop">
@@ -49,22 +49,22 @@ $('#dragdrop').dragdrop('/upload/', 'css-class-dragover', function(fd) {
 
 ## Events
 
-#### $('#my-file,#dragdrop').on('begin');
+#### $('#my-file,#dragdrop').on('upload-begin');
 
 > On begin upload.
 
 ```js
-$('#my-file,#dragdrop').on('begin', function(e) {
+$('#my-file,#dragdrop').on('upload-begin', function(e) {
 	// your code here
 });
 ```
 
-#### $('#my-file,#dragdrop').on('end');
+#### $('#my-file,#dragdrop').on('upload-end');
 
 > On end upload.
 
 ```js
-$('#my-file,#dragdrop').on('end', function(e, data) {
+$('#my-file,#dragdrop').on('upload-end', function(e, data) {
 
 	if (data === null) {
 		// error
@@ -75,23 +75,23 @@ $('#my-file,#dragdrop').on('end', function(e, data) {
 });
 ```
 
-#### $('#my-file,#dragdrop').on('error');
+#### $('#my-file,#dragdrop').on('upload-error');
 
 > On upload error.
 
 ```js
-$('#my-file,#dragdrop').on('end', function(e, err) {
+$('#my-file,#dragdrop').on('upload-error', function(e, err, status) {
 	// your code here
-	console.log(err);
+	console.log(err, status);
 });
 ```
 
-#### $('#my-file,#dragdrop').on('progress');
+#### $('#my-file,#dragdrop').on('upload-progress');
 
 > On upload progress.
 
 ```js
-$('#my-file,#dragdrop').on('progress', function(e, percentage, transferSpeed, timeRemaining) {
+$('#my-file,#dragdrop').on('upload-progress', function(e, percentage, transferSpeed, timeRemaining) {
 
 	// your code here
 

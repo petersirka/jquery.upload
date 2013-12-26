@@ -1,9 +1,15 @@
-$.fn.upload = function (url, fnData) {
+$.fn.upload = function (url, fnData, max) {
 
     var self = this;
 
     if (self.data('a') === 1)
         return;
+
+    if (typeof(fnData) === 'number') {
+        var tmp = max;
+        max = fnData;
+        fnData = tmp;
+    }
 
     self.data('a', 1);
     self.bind('change', function(e) {
@@ -13,6 +19,11 @@ $.fn.upload = function (url, fnData) {
 
         var files = self.files;
         var fd = new FormData();
+
+        if (max > 0 && files.length > max) {
+            self.trigger('upload-error', new Error('Maximum files exceeded.'), 0);
+            return;
+        }
 
         for (var i = 0; i < files.length; i++)
             fd.append('file' + (i + 1), files[i]);
@@ -26,34 +37,34 @@ $.fn.upload = function (url, fnData) {
             self.data('b', 0);
 
             if (this.status === 200) {
-                self.trigger('end', [true, $.parseJSON(this.responseText)]);
+                self.trigger('upload-end', [true, $.parseJSON(this.responseText)]);
                 return;
             }
 
-            self.trigger('error', new Error(this.responseText), this.status);
-            self.trigger('end', [false, null]);
+            self.trigger('upload-error', new Error(this.responseText), this.status);
+            self.trigger('upload-end', [false, null]);
         }, false);
 
         xhr.upload.addEventListener('upload-progress', function (evt) {
             var percentage = 0;
             if (evt.lengthComputable)
                 percentage = Math.round(evt.loaded * 100 / evt.total);
-            self.trigger('progress', [percentage, evt.transferSpeed, evt.timeRemaining]);
+            self.trigger('upload-progress', [percentage, evt.transferSpeed, evt.timeRemaining]);
         }, false);
 
         xhr.addEventListener('error', function (e) {
             self.data('b', 0);
-            self.trigger('error', e);
-            self.trigger('end', [false, null]);
+            self.trigger('upload-error', e);
+            self.trigger('upload-end', [false, null]);
         }, false);
 
         xhr.addEventListener('abort', function () {
             self.data('b', 0);
-            self.trigger('end', [false, null]);
+            self.trigger('upload-end', [false, null]);
         }, false);
 
         self.data('b', 1);
-        self.trigger('begin');
+        self.trigger('upload-begin');
 
         xhr.open('POST', url);
         xhr.send(fd);
@@ -62,17 +73,28 @@ $.fn.upload = function (url, fnData) {
     return true;
 };
 
-$.fn.dragdrop = function (url, cls, fnData) {
+$.fn.dragdrop = function (url, cls, fnData, max) {
 
     var self = $(this);
 
     if (self.data('a') === 1)
         return self;
 
+    if (typeof(cls) === 'number') {
+        var tmp = max;
+        max = cls;
+        cls = tmp;
+    }
+
     if (typeof(cls) === 'function') {
         var tmp = fnData;
         fnData = cls;
         cls = tmp;
+    }
+
+    if (typeof(fnData) === 'number') {
+        max = fnData;
+        fnData = null;
     }
 
     self.data('a', 1);
@@ -105,6 +127,11 @@ $.fn.dragdrop = function (url, cls, fnData) {
         if (count === 0)
             return;
 
+        if (max > 0 && files.length > max) {
+            self.trigger('upload-error', new Error('Maximum files exceeded.'), 0);
+            return;
+        }
+
         if (self.data('b') === 1)
             return;
 
@@ -122,12 +149,12 @@ $.fn.dragdrop = function (url, cls, fnData) {
             self.data('b', 0);
 
             if (this.status === 200) {
-                self.trigger('end', [true, $.parseJSON(this.responseText)]);
+                self.trigger('upload-end', [true, $.parseJSON(this.responseText)]);
                 return;
             }
 
-            self.trigger('error', new Error(this.responseText), this.status);
-            self.trigger('end', [false, null]);
+            self.trigger('upload-error', new Error(this.responseText), this.status);
+            self.trigger('upload-end', [false, null]);
 
         }, false);
 
@@ -135,22 +162,22 @@ $.fn.dragdrop = function (url, cls, fnData) {
             var percentage = 0;
             if (evt.lengthComputable)
                 percentage = Math.round(evt.loaded * 100 / evt.total);
-            self.trigger('progress', [percentage, evt.transferSpeed, evt.timeRemaining]);
+            self.trigger('upload-progress', [percentage, evt.transferSpeed, evt.timeRemaining]);
         }, false);
 
         xhr.addEventListener('error', function (e) {
             self.data('b', 0);
-            self.trigger('error', e);
-            self.trigger('end', [false, null]);
+            self.trigger('upload-error', e);
+            self.trigger('upload-end', [false, null]);
         }, false);
 
         xhr.addEventListener('abort', function () {
             self.data('b', 0);
-            self.trigger('end', [false, null]);
+            self.trigger('upload-end', [false, null]);
         }, false);
 
         self.data('b', 1);
-        self.trigger('begin');
+        self.trigger('upload-begin');
 
         xhr.open('POST', url);
         xhr.send(fd);
