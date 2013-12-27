@@ -64,7 +64,7 @@ $('#my-file,#dragdrop').on('upload-begin', function(e) {
 > On end upload.
 
 ```js
-$('#my-file,#dragdrop').on('upload-end', function(e, data) {
+$('#my-file,#dragdrop').on('upload-end', function(e, isUploaded, data) {
 
 	if (data === null) {
 		// error
