@@ -122,6 +122,8 @@ $.fn.dragdrop = function (url, cls, fnData, max) {
                 return;
         }
 
+        $('input:focus,textarea:focus').blur();
+
         var files = e.originalEvent.dataTransfer.files;
         var count = files.length;
         if (count === 0)
