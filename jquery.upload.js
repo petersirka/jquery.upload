@@ -17,7 +17,7 @@ $.fn.upload = function (url, fnData, max) {
         if (self.data('b') === 1)
             return;
 
-        var files = self.files;
+        var files = this.files;
         var fd = new FormData();
 
         if (max > 0 && files.length > max) {
