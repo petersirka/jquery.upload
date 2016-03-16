@@ -68,6 +68,9 @@ $.fn.upload = function (url, fnData, max) {
 
         xhr.open('POST', url);
         xhr.send(fd);
+
+        // RESET
+        this.value = '';
     });
 
     return true;
